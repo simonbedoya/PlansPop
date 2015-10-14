@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,7 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
 
 
     public interface ActionEditarMisPlanesFragment{
-        void Actualizado(Boolean exito);
+        void EliminarOLoadMap(Boolean loadMaps,Boolean eliminar);
 
     }
 
@@ -63,10 +64,8 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
     Context context;
 
     ImageView imagen;
-    EditText nombre,descripcion;
-    TextView fecha,hora;
-    Button btn_fecha,btn_hora, btn_aceptar;
-
+    EditText nombre,descripcion,fecha,hora, lugar;
+    Button btn_informacion,btn_lugar, btn_eliminar, btn_cambiarImg;
 
     File ImgF;
 
@@ -76,6 +75,7 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
     private String Sfecha,Shora;
 
     ProgressDialog progressDialog;
+    PlanParse planParse = new PlanParse(this);
 
     public EditarMisPlanesFragment() {
         // Required empty public constructor
@@ -96,70 +96,31 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
 
         nombre = (EditText) v.findViewById(R.id.editNombre_MisPlanes);
         descripcion = (EditText) v.findViewById(R.id.editDescripcion_MisPlanes);
-        fecha = (TextView) v.findViewById(R.id.txtFecha_MisPlanes);
-        hora = (TextView) v.findViewById(R.id.txtHora_MisPlanes);
+        fecha = (EditText) v.findViewById(R.id.txtFechaMisPlanes);
+        hora = (EditText) v.findViewById(R.id.txtHora_MisPlanes);
+        lugar = (EditText) v.findViewById(R.id.edtLugar_MisPlanes);
 
+        btn_informacion = (Button) v.findViewById(R.id.btn_ActualizarInformacion);
+        btn_lugar = (Button) v.findViewById(R.id.btn_editarLugar);
+        btn_eliminar = (Button) v.findViewById(R.id.btn_Eliminar);
 
-        btn_fecha = (Button) v.findViewById(R.id.btn_txtFechaMisPlanes);
-        btn_hora = (Button) v.findViewById(R.id.btn_txtHoraMisPlanes);
-        btn_aceptar = (Button) v.findViewById(R.id.btn_AceptarMisPlanes);
+        btn_cambiarImg = (Button) v.findViewById(R.id.btn_cambiarImg);
 
         imagen = (ImageView) v.findViewById(R.id.image_MisPlanes);
 
         loadDatos();
 
-        //<editor-fold desc="Botton fecha">
-        btn_fecha.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
+        nombre.setEnabled(false);
+        descripcion.setEnabled(false);
+        fecha.setEnabled(false);
+        hora.setEnabled(false);
+        btn_cambiarImg.setEnabled(false);
 
-                DatePickerDialog datePicker =new DatePickerDialog(v.getContext(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        btn_informacion.setOnClickListener(this);
+        btn_lugar.setOnClickListener(this);
+        btn_eliminar.setOnClickListener(this);
 
-                                Sfecha = dayOfMonth+"/"+monthOfYear+"/"+year;
-                                fecha.setText(Sfecha);
 
-                            }
-                        },mYear,mMonth,mDay);
-                datePicker.show();
-            }
-        });
-        //</editor-fold>
-
-        //<editor-fold desc="Hora">
-        btn_hora.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar calendar = Calendar.getInstance();
-                mHora = calendar.get(calendar.HOUR_OF_DAY);
-                mMinuto  = calendar.get(calendar.MINUTE);
-
-                TimePickerDialog timePicker = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        String am_pm;
-                        if(hourOfDay < 12) {
-                            am_pm = "AM";
-                        } else {
-                            am_pm = "PM";
-                        }
-                        Shora = hourOfDay+":"+minute+" "+am_pm;
-                        hora.setText(Shora);
-                    }
-                },mHora,mMinuto,false);
-                timePicker.show();
-            }
-        });
-        //</editor-fold>
-
-        imagen.setOnClickListener(this);
-        btn_aceptar.setOnClickListener(this);
 
         return v;
     }
@@ -167,7 +128,7 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.image_MisPlanes:
+            case R.id.btn_cambiarImg:
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Elige una Opción");
@@ -175,26 +136,136 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
                 builder.show();
 
                 break;
-            case R.id.btn_AceptarMisPlanes:
+            case R.id.btn_ActualizarInformacion:
 
-                Plan p = AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes);
-                p.setNombre(nombre.getText().toString());
-                p.setDescripcion(descripcion.getText().toString());
-                p.setFecha(fecha.getText().toString() + " " + hora.getText().toString());
-                if(ImgF!=null){p.setImgPath(ImgF.getPath());
-                }else{
+                nombre.setEnabled(true);
+                descripcion.setEnabled(true);
+                fecha.setEnabled(true);
+                hora.setEnabled(true);
+                btn_cambiarImg.setEnabled(true);
 
-                }
+                btn_lugar.setEnabled(false);
+                btn_eliminar.setEnabled(false);
 
-                progressDialog = new ProgressDialog(context);
-                progressDialog.setMessage("Cargando datos...");
-                progressDialog.show();
-                PlanParse planParse = new PlanParse(this);
-                planParse.updatePlan(p);
+                btn_informacion.setText("Aceptar");
+                btn_informacion.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
 
+                btn_cambiarImg.setOnClickListener(this);
 
+                //<editor-fold desc="Botton fecha">
+                fecha.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar c = Calendar.getInstance();
+                        mYear = c.get(Calendar.YEAR);
+                        mMonth = c.get(Calendar.MONTH);
+                        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePicker =new DatePickerDialog(v.getContext(),
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                                        Sfecha = dayOfMonth+"/"+monthOfYear+"/"+year;
+                                        fecha.setText(Sfecha);
+
+                                    }
+                                },mYear,mMonth,mDay);
+                        datePicker.show();
+                    }
+                });
+                //</editor-fold>
+
+                //<editor-fold desc="Hora">
+                hora.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar calendar = Calendar.getInstance();
+                        mHora = calendar.get(calendar.HOUR_OF_DAY);
+                        mMinuto  = calendar.get(calendar.MINUTE);
+
+                        TimePickerDialog timePicker = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                String am_pm;
+                                if(hourOfDay < 12) {
+                                    am_pm = "AM";
+                                    if(hourOfDay==0){
+                                        hourOfDay=12;
+                                    }
+                                } else {
+                                    if(hourOfDay!=12){
+                                        hourOfDay=hourOfDay-12;
+                                    }
+                                    am_pm = "PM";
+                                }
+                                if(hourOfDay<10){
+                                    if(minute<10){
+                                        Shora = "0"+hourOfDay+":"+"0"+minute+" "+am_pm;
+                                    }
+                                    else{
+                                        Shora = "0"+hourOfDay+":"+minute+" "+am_pm;
+                                    }
+                                }
+                                else{
+                                    Shora= hourOfDay+":"+minute+" "+am_pm;
+                                }
+                                hora.setText(Shora);
+                            }
+                        },mHora,mMinuto,false);
+                        timePicker.show();
+                    }
+                });
+                //</editor-fold>
+
+                btn_informacion.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Plan p = AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes);
+                        p.setNombre(nombre.getText().toString());
+                        p.setDescripcion(descripcion.getText().toString());
+                        p.setFecha(fecha.getText().toString() + " " + hora.getText().toString());
+                        if(ImgF!=null){
+                            p.setImgPath(ImgF.getPath());
+                        }
+
+                        progressDialog = new ProgressDialog(context);
+                        progressDialog.setMessage("Cargando datos...");
+                        progressDialog.show();
+
+                        planParse.updatePlan(p);
+                    }
+                });
 
                 break;
+            case R.id.btn_editarLugar:
+
+                actionEditarMisPlanesFragment.EliminarOLoadMap(true,false);
+
+                break;
+
+            case R.id.btn_Eliminar:
+
+                final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle("Eliminar Plan"); //Set Alert dialog title here
+                alert.setMessage("Esta seguro que quiere eliminar plan"); //Message here
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actionEditarMisPlanesFragment.EliminarOLoadMap(false,true);
+                    }
+                });
+                alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alertDialog = alert.create();
+                alertDialog.show();
+
+                break;
+
 
         }
     }
@@ -215,7 +286,6 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
 
     private void tomarFoto(){
 
-
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File dir = new File(Environment.getExternalStorageDirectory().getPath()+"/PLanes");
 
@@ -223,15 +293,10 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
             dir.mkdir();
         }
 
-
         ImgF = new File(dir, AddActivity.name+ "P" + ".jpg");
-
         Uri uri = Uri.fromFile(ImgF);
-
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(intent, CAMERA);
-
-
     }
 
     private void elegirFoto(){
@@ -320,10 +385,11 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
     private void loadDatos() {
         if(AppUtil.positionSelectedMisPlanes!=-1){
 
-            nombre.setText(AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes).getNombre());
-            descripcion.setText(AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes).getDescripcion());
+            Plan plan =AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes);
+            nombre.setText(plan.getNombre());
+            descripcion.setText(plan.getDescripcion());
 
-            String[] formatDate = AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes).getFecha().split(" ");
+            String[] formatDate = plan.getFecha().split(" ");
             String date = formatDate[0];
             String hour = formatDate[1];
             String am_pm = formatDate[2];
@@ -331,23 +397,31 @@ public class EditarMisPlanesFragment extends Fragment implements View.OnClickLis
             fecha.setText(date);
             hora.setText(hour+" "+am_pm);
 
-
+            lugar.setText(plan.getDireccion());
 
             Picasso.with(context)
                     .load(Uri.parse(AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes).getImagen()))
                     .into(imagen);
-
         }
-
     }
-
-
 
     @Override
     public void done(boolean exito) {
         progressDialog.cancel();
         progressDialog.hide();
-        actionEditarMisPlanesFragment.Actualizado(exito);
+
+        nombre.setEnabled(false);
+        descripcion.setEnabled(false);
+        fecha.setEnabled(false);
+        hora.setEnabled(false);
+        btn_cambiarImg.setEnabled(false);
+
+        btn_informacion.setText("Editar");
+        btn_informacion.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+
+        btn_lugar.setEnabled(true);
+        btn_eliminar.setEnabled(true);
+
     }
 
     @Override

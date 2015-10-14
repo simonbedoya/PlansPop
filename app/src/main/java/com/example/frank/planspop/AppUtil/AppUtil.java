@@ -1,5 +1,7 @@
 package com.example.frank.planspop.AppUtil;
 
+import android.widget.LinearLayout;
+
 import com.example.frank.planspop.adapters.PlanAdapter;
 import com.example.frank.planspop.models.Lugar;
 import com.example.frank.planspop.models.Plan;
@@ -28,6 +30,7 @@ import java.util.List;
         public static int positionSelectedMisPlanes;
         public static int tab=0;
         public static PlanAdapter adapter_list;
+        public static Boolean search_btn=false;
 }
 
 

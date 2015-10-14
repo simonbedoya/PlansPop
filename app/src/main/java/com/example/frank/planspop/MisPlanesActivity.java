@@ -1,5 +1,6 @@
 package com.example.frank.planspop;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,20 +16,28 @@ import com.example.frank.planspop.fragments.EditarMisPlanesFragment;
 import com.example.frank.planspop.fragments.VerMisPlanesFragment;
 import com.example.frank.planspop.models.Plan;
 import com.example.frank.planspop.parse.PlanParse;
+import com.parse.DeleteCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.List;
 
 
-public class MisPlanesActivity extends AppCompatActivity implements VerMisPlanesFragment.ActionVerMisPlanes,EditarMisPlanesFragment.ActionEditarMisPlanesFragment,AddPlanMapsFragment.OnLugarSelected, PlanParse.PlanParseInterface {
+public class MisPlanesActivity extends AppCompatActivity implements EditarMisPlanesFragment.ActionEditarMisPlanesFragment, AddPlanMapsFragment.OnLugarSelected, PlanParse.PlanParseInterface {
+
+    ProgressDialog progressDialog;
+    PlanParse planParse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mis_planes);
 
-        VerMisPlanesFragment verMisPlanesFragment = new VerMisPlanesFragment();
-        putFragment(R.id.mis_planes_contairner, verMisPlanesFragment);
+        EditarMisPlanesFragment editarMisPlanesFragment = new EditarMisPlanesFragment();
+        putFragment(R.id.mis_planes_contairner, editarMisPlanesFragment);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -61,37 +70,8 @@ public class MisPlanesActivity extends AppCompatActivity implements VerMisPlanes
         fT.commit();
     }
 
-    @Override
-    public void Actualizado(Boolean exito) {
-        if(exito) {
-            VerMisPlanesFragment verMisPlanesFragment = new VerMisPlanesFragment();
-            putFragment(R.id.mis_planes_contairner, verMisPlanesFragment);
-        }
-        else{
-            Log.i("Error","Error");
-        }
-    }
 
-    @Override
-    public void editarInformacion(Boolean informacion, Boolean maps) {
-        if(informacion){
-            EditarMisPlanesFragment editarMisPlanesFragment = new EditarMisPlanesFragment();
-            putFragment(R.id.mis_planes_contairner, editarMisPlanesFragment);
-        }
-        else if(maps){
-            AddPlanMapsFragment addPlanMapsFragment = new AddPlanMapsFragment();
-            putFragment(R.id.mis_planes_contairner, addPlanMapsFragment);
-        }
-    }
 
-    @Override
-    public void eliminarPlan(Boolean exito) {
-        if(exito){
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
 
     @Override
     public void onLugarSelected(double latitud, double longitud, String direccion, String nombreLugar) {
@@ -99,18 +79,22 @@ public class MisPlanesActivity extends AppCompatActivity implements VerMisPlanes
         ParseGeoPoint posicion = new ParseGeoPoint(latitud,longitud);
         p.setLugar(posicion);
         p.setDireccion(nombreLugar);
-        PlanParse planParse = new PlanParse(this);
+        planParse = new PlanParse(this);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Cargando Lugar...");
         planParse.updatePlan(p);
 
 
-        VerMisPlanesFragment verMisPlanesFragment = new VerMisPlanesFragment();
-        putFragment(R.id.mis_planes_contairner, verMisPlanesFragment);
+        EditarMisPlanesFragment editarMisPlanes= new EditarMisPlanesFragment();
+        putFragment(R.id.mis_planes_contairner, editarMisPlanes);
 
     }
 
     @Override
     public void done(boolean exito) {
-
+        progressDialog.cancel();
+        progressDialog.hide();
     }
 
     @Override
@@ -121,5 +105,50 @@ public class MisPlanesActivity extends AppCompatActivity implements VerMisPlanes
     @Override
     public void resultListPlans(boolean exito, List<Plan> planes) {
 
+    }
+
+    @Override
+    public void EliminarOLoadMap(Boolean loadMaps, Boolean eliminar) {
+
+        if(loadMaps) {
+            AddPlanMapsFragment addPlanMapsFragment = new AddPlanMapsFragment();
+            putFragment(R.id.mis_planes_contairner, addPlanMapsFragment);
+        }
+        else if(eliminar){
+            Plan plan = AppUtil.data_misPlanes.get(AppUtil.positionSelectedMisPlanes);
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Eliminando...");
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Plan");
+            query.getInBackground(plan.getId(), new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    deletePlan(object);
+                }
+            });
+        }
+    }
+
+    public void deletePlan (ParseObject object){
+        object.deleteInBackground(new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                progressDialog.cancel();
+                progressDialog.hide();
+                if( e== null) {
+                    terminarActivity();
+                }
+                else{
+
+                    Log.i("Error", "Eliminando");
+                }
+            }
+        });
+    }
+
+    public void terminarActivity (){
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

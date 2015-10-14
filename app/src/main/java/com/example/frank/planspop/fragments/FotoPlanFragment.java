@@ -114,12 +114,12 @@ public class FotoPlanFragment extends Fragment implements View.OnClickListener {
         }
 
 
-            ImgF = new File(dir, AddActivity.name+ "P" + ".jpg");
+        ImgF = new File(dir, AddActivity.name+ "P" + ".jpg");
 
-            Uri uri = Uri.fromFile(ImgF);
+        Uri uri = Uri.fromFile(ImgF);
 
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            startActivityForResult(intent, CAMERA);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, CAMERA);
 
 
     }
@@ -214,3 +214,4 @@ public class FotoPlanFragment extends Fragment implements View.OnClickListener {
 
 
 }
+

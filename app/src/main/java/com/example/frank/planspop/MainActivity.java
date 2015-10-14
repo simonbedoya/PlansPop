@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     ViewPager mViewPager;
 
     public static ProgressDialog dialog;
+    ProgressDialog cerrar_sesion;
     AlertDialog close;
     public static ProgressDialog getDialog() {
         return dialog;
@@ -56,17 +57,23 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         setContentView(R.layout.activity_main);
 
         dialog = new ProgressDialog(this);
-        dialog.setMessage("Cargando informacion....");
-
+        dialog.setMessage("Cargando informacion...");
+        cerrar_sesion = new ProgressDialog(this);
+        cerrar_sesion.setMessage("Cerrando sesión...");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         data = new ArrayList<>();
 
-        data.add((TitleFragment) TitleFragment.instantiate(this, MisPlanesFragment.class.getName()));
         data.add((TitleFragment) TitleFragment.instantiate(this, ListaFragment.class.getName()));
-        data.add((TitleFragment) TitleFragment.instantiate(this, MapsFragment.class.getName()));
+
+
+        MapsFragment mapsFragment = new MapsFragment();
+        mapsFragment.init(MapsFragment.LATITUD_POPOYAN, MapsFragment.LONGITUD_POPOYAN, MapsFragment.ZOOM);
+        data.add(mapsFragment);
+        data.add((TitleFragment) TitleFragment.instantiate(this, MisPlanesFragment.class.getName()));
+
 
         adapter = new PagerAdapter(getSupportFragmentManager(),data);
 
@@ -107,6 +114,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if(which == DialogInterface.BUTTON_POSITIVE){
+            cerrar_sesion.show();
+            ParseUser.logOut();
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            cerrar_sesion.hide();
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivity(intent);
             finish();
@@ -133,11 +144,13 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
 
                 break;
             case R.id.home:
+                Log.d("Tab", String.valueOf(AppUtil.tab));
                 switch (AppUtil.tab){
                     case 1:
+                        list_my.Reload();
                         break;
                     case 2:
-                        list_my.Reload();
+                        list.Reload();
                         break;
                     case 3:
                         list.Reload();
@@ -184,14 +197,15 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
         View search = findViewById(R.id.action_search);
         InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(search.getWindowToken(), 0);
-
+        AppUtil.search_btn=true;
         Log.d("Tab", String.valueOf(AppUtil.tab));
         AppUtil.searching = query.toString();
         switch (AppUtil.tab){
             case 1:
+                list_my.search();
                 break;
             case 2:
-                list_my.search();
+                list.search();
                 break;
             case 3:
                 list.search();
@@ -217,9 +231,10 @@ public class MainActivity extends AppCompatActivity implements DialogInterface.O
     public boolean onMenuItemActionCollapse(MenuItem item) {
         switch (AppUtil.tab){
             case 1:
+                list_my.Reload();
                 break;
             case 2:
-                list_my.Reload();
+                list.Reload();
                 break;
             case 3:
                 list.Reload();

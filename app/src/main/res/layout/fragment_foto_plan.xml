@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="simon.unicauca.edu.co.planpop.Fragments.FotoPlanFragment">
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Display1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Foto para el Plan"
+        android:gravity="center"
+        android:padding="@dimen/padding_medium"/>
+    <Button
+        android:id="@+id/btn_tomarFoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tomar Foto"
+        android:padding="@dimen/padding_medium"
+        android:background="@color/transparente"/>
+    <Button
+        android:id="@+id/btn_elegirFoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Elegir Foto"
+        android:padding="@dimen/padding_medium"
+        android:background="@color/transparente"/>
+    <ImageView
+        android:id="@+id/img_fotoPlan"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:padding="@dimen/padding_medium"/>
+    <Button
+        android:id="@+id/btn_siguienteFotoFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/siguiente"/>
+
+
+</LinearLayout>

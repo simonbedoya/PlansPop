@@ -1,0 +1,87 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+
+    tools:context="com.example.frank.planspop.fragments.AddFragment">
+
+    <EditText
+        android:id="@+id/nombre"
+        android:hint="@string/nombre"
+        android:textSize="@dimen/padding_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:padding="@dimen/padding_small"
+        android:gravity="center"
+        />
+
+    <EditText
+        android:id="@+id/descripcion"
+        android:layout_below="@id/nombre"
+        android:hint="@string/descripcion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:gravity="center"
+        android:inputType="text"
+        android:padding="@dimen/padding_small"
+        />
+
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/fecha"
+        android:hint="@string/fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small"
+        android:gravity="left"
+        android:layout_alignBottom="@+id/btn_fecha"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/btn_fecha"
+        />
+
+    <Button
+        android:id="@+id/btn_fecha"
+        android:text="editar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/descripcion"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/hora"
+        android:hint="@string/hora"
+        android:padding="@dimen/padding_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_hora"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/btn_hora"
+        />
+    <Button
+        android:id="@+id/btn_hora"
+        android:text="editar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_fecha"
+        android:layout_alignParentRight="true"/>
+
+
+    <Button
+        android:id="@+id/btn_siguienteAddFragment"
+        android:text="@string/siguiente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/accent_material_light"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+
+</RelativeLayout>

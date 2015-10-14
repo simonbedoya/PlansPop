@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="simon.unicauca.edu.co.planpop.Fragments.VerMisPlanesFragment">
+
+    <TextView
+        style="@style/TextAppearance.AppCompat.Display1"
+        android:id="@+id/txt_Nombre_verMisPlanes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/btn_ActualizarInformacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Actualizar información"/>
+    <Button
+        android:id="@+id/btn_editarLugar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Editar Lugar"/>
+
+    <Button
+        android:id="@+id/btn_Eliminar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff0000"
+        android:text="Eliminar"/>
+
+</LinearLayout>

@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="simon.unicauca.edu.co.planpop.RemPassActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recuperacion de contraseñas"
+        style="@style/Base.TextAppearance.AppCompat.Title"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:layout_margin="30dp"/>
+    <TextView
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        style="@style/Base.TextAppearance.AppCompat.Body1"
+        android:text="Por favor coloca el correo electronico con el que abrio la cuenta para poder suministrarle el link de recuperacion de contraseña"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/emailr"
+        android:layout_margin="20dp"
+        android:hint="email"
+        android:gravity="center"
+        android:inputType="textEmailAddress"/>
+
+    <Button
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_rem"
+        android:layout_gravity="center"
+        android:text="Enviar solicitud"
+        />
+</LinearLayout>

@@ -40,7 +40,6 @@
         android:id="@+id/btn_nextcyp"
         android:layout_below="@id/text3"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:drawableRight="@drawable/ic_action_next_white"/>
+        android:layout_margin="20dp"/>
 
 </RelativeLayout>

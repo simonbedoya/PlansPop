@@ -1,8 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="simon.unicauca.edu.co.planpop.Fragments.Register_InfoPFragment"
-    android:orientation="vertical"
     >
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -11,55 +10,42 @@
         style="@style/Base.TextAppearance.AppCompat.Title"
         android:textStyle="bold"
         android:id="@+id/text1"
-        android:layout_marginTop="30dp"/>
+        android:layout_margin="10dp"/>
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:id="@+id/cpln_info"
-        android:layout_gravity="center_horizontal"
+        android:id="@+id/edt_name"
+        android:hint="Complete name"
+        android:gravity="center"
+        android:layout_below="@+id/text1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp">
-        <EditText
-            android:id="@+id/edt_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre completo"
-            android:inputType="textPersonName"
-            android:gravity="center"
-            android:drawableLeft="@drawable/ic_action_name_dark"/>
-    </android.support.design.widget.TextInputLayout>
+        android:inputType="text"
+        android:layout_margin="10dp"/>
 
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:id="@+id/birth_info"
-        android:layout_gravity="center_horizontal"
-        android:layout_centerHorizontal="true">
-        <EditText
-            android:id="@+id/edt_fechan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Fecha nacimiento"
-            android:inputType="date"
-            android:gravity="center"
-            android:drawableLeft="@drawable/ic_action_birth_dark"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"/>
-    </android.support.design.widget.TextInputLayout>
+        android:id="@+id/edt_fechan"
+        android:hint="Birthdate"
+        android:gravity="center"
+        android:layout_below="@+id/edt_name"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:inputType="date"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
 
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@id/edt_fechan"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:id="@+id/gr_rb"
-        android:orientation="horizontal"
-        android:layout_margin="10dp"
-        >
+        android:orientation="horizontal">
         <RadioButton
             android:id="@+id/h"
             android:layout_width="wrap_content"
@@ -68,8 +54,6 @@
             android:layout_gravity="center"
             android:layout_marginRight="15dp"
             android:textSize="18dp"
-            android:onClick="r_button"
-
             />
         <RadioButton
             android:id="@+id/m"
@@ -79,54 +63,37 @@
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:textSize="18dp"
-            android:onClick="r_button"
             />
 
     </RadioGroup>
-
-    <android.support.design.widget.TextInputLayout
+    <EditText
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:id="@+id/username_info"
-        android:layout_gravity="center_horizontal"
-        android:layout_centerHorizontal="true" >
-        <EditText
-            android:id="@+id/edt_user"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Usuario"
-            android:inputType="text"
-            android:gravity="center"
-            android:drawableLeft="@drawable/ic_action_person_dark"
-            />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/password_info"
-        android:layout_gravity="center_horizontal"
+        android:id="@+id/edt_user"
+        android:hint="Username"
+        android:gravity="center"
+        android:layout_below="@+id/gr_rb"
         android:layout_centerHorizontal="true"
-        >
-        <EditText
-            android:id="@+id/edt_pass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:gravity="center"
-            android:drawableLeft="@drawable/ic_action_key_dark"
-            />
-    </android.support.design.widget.TextInputLayout>
-
+        android:inputType="text"
+        android:layout_margin="10dp"/>
+    <EditText
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/edt_pass"
+        android:hint="Password"
+        android:gravity="center"
+        android:layout_below="@+id/edt_user"
+        android:layout_centerHorizontal="true"
+        android:inputType="textPassword"
+        android:layout_margin="10dp"/>
     <Button
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="Crear cuenta"
+        android:layout_gravity="center"
+        android:text="Continuar"
         android:id="@+id/btn_nextip"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/edt_pass"
         android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-        android:drawableLeft="@drawable/ic_action_add_user"/>
+        android:layout_margin="10dp"/>
 
-</LinearLayout>
+</RelativeLayout>
